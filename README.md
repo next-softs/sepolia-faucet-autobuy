@@ -1,6 +1,6 @@
 # === SEPOLIA FAUCET 1.0 ===
 
-**SEPOLIA FAUCET** — это бот для автоматической покупки текстовых ETH SEPOLIA.    
+**SEPOLIA FAUCET** — это бот для автоматической покупки тестовых ETH SEPOLIA.    
 
 ## Функционал бота:  
 - [Бридж](https://testnetbridge.com/sepolia) ETH из OP или ARB переводим в SEPOLIA. Сеть из которой берем ETH определяется автоматически т.е. если ETH в OP, то тестовые токены будут куплены из OP
