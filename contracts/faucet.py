@@ -7,7 +7,7 @@ import requests
 
 class Faucet(Default):
     def __init__(self, account, chain):
-        super().__init__(account.private_key, chain.rpc, [], chain.contract_address)
+        super().__init__(account.private_key, chain.rpc, [], chain.contract_address, account.proxy)
         self.chain = chain
 
     def amounts(self, amount_in):

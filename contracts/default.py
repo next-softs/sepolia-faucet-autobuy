@@ -7,22 +7,33 @@ from utils.session import create_session
 
 
 class Default:
-    def __init__(self, private_key, rpc, abi, contract_address, proxy=None):
+    def __init__(self, private_key, rpc, abi, contract_address=None, proxy=None):
         self.session = create_session(proxy)
 
         self.w3 = Web3(Web3.HTTPProvider(rpc, session=self.session))
+
         self.rpc = rpc
 
         self.private_key = private_key
         self.address = self.w3.eth.account.from_key(self.private_key).address
+
         self.acc_name = f"{self.address[:5]}..{self.address[-5:]}"
 
-        self.contract_address = contract_address
-        self.contract = self.w3.eth.contract(address=self.w3.to_checksum_address(contract_address), abi=abi)
+        if contract_address:
+            self.contract_address = contract_address
+            self.contract = self.w3.eth.contract(address=self.w3.to_checksum_address(contract_address), abi=abi)
         self.infinite = 115792089237316195423570985008687907853269984665640564039457584007913129639935
 
         self.gwei = 18
         self.erc20_abi = [{'constant': True, 'inputs': [{'name': '_owner', 'type': 'address'}], 'name': 'balanceOf', 'outputs': [{'name': 'balance', 'type': 'uint256'}], 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'decimals', 'outputs': [{'name': '', 'type': 'uint8'}], 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_owner', 'type': 'address'}, {'name': '_spender', 'type': 'address'}], 'name': 'allowance', 'outputs': [{'name': 'remaining', 'type': 'uint256'}], 'type': 'function'}]
+
+    def upd_w3_client(self, rpc=None, proxy=None):
+        if proxy: self.session = create_session(proxy)
+
+        if rpc: self.rpc = rpc
+
+        self.w3 = Web3(Web3.HTTPProvider(self.rpc, session=self.session))
+
 
     def gwei_to_wei(self, value_in_gwei, gwei=0):
         gwei = gwei if gwei != 0 else self.gwei
@@ -32,7 +43,7 @@ class Default:
         gwei = gwei if gwei != 0 else self.gwei
         return round(Decimal(value_in_wei) / Decimal(10**gwei), gwei)
 
-    def send_transaction(self, tx, desc=""):
+    def send_transaction(self, tx, desc="", send_err=True):
         try:
             if "gas" not in tx: tx.update({"gas": hex(int(self.w3.eth.estimate_gas(tx) * 1.5))})
             # if "gasPrice" not in tx: tx.update({"gasPrice": hex(int(self.w3.eth.gas_price * 1.2))})
@@ -45,10 +56,12 @@ class Default:
                 logger.success(f'{self.acc_name} {desc + " " if desc else ""}{data.get("transactionHash").hex()}')
                 return True
             else:
-                logger.error(f'{self.acc_name} {desc + " " if desc else ""}{data.get("transactionHash").hex()}')
+                if send_err:
+                    logger.error(f'{self.acc_name} {desc + " " if desc else ""}{data.get("transactionHash").hex()}')
 
         except Exception as e:
-            logger.error(f'{self.acc_name} {desc + " " if desc else ""}Error: {e}')
+            if send_err:
+                logger.error(f'{self.acc_name} {desc + " " if desc else ""}Error: {e}')
 
         return False
 
