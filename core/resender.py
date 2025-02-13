@@ -27,7 +27,8 @@ def distribution(index, address_count, addr, proxies, private_sender):
     global ready_addr
 
     client_sender = Sepolia(Account(private_sender, random.choice(proxies)))
-
+    addr = client_sender.w3.to_checksum_address(addr)
+    
     amount = round(random.uniform(*amounts_distribution), 6)
     client_intermediate = client_sender
 
