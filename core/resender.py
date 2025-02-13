@@ -50,6 +50,7 @@ def distribution(index, address_count, addr, proxies, private_sender):
                     if send_recipient:
                         logger.info(f"{index}/{address_count} отправили на конечный адрес {addr}")
                         ready_addr.append(addr)
+                        break
 
                     client_intermediate = Sepolia(Account(private_key, random.choice(proxies)))
                     for j in range(10):
