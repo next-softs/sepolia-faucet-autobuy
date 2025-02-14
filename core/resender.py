@@ -63,7 +63,7 @@ def distribution(index, address_count, addr, proxies, private_sender):
                             time.sleep(10)
                     break
                 else:
-                    client_intermediate.upd_w3_client(rpc=random.choice(sepolia_rpc), proxy=random.choice(proxies))
+                    client_intermediate.upd_w3_client(rpc=random.choice(sepolia_rpc), proxy=random.choice(proxies) if not useProxies else None)
                     # logger.warning(f"{index}/{address_count} ошибка при отправке, повторяем попытку")
 
             except Exception as err:
@@ -76,7 +76,7 @@ def start_distribution():
     private_sender = input(f"Введите приватный ключ отправителя: ")
     proxies = txt_to_list("proxies")
 
-    client_sender = Sepolia(Account(private_sender, random.choice(proxies)))
+    client_sender = Sepolia(Account(private_sender, random.choice(proxies) if not useProxies else None))
 
     logger.info(f"баланс отправителя {round(client_sender.balance(), 4)} ETH")
 
