@@ -28,7 +28,7 @@ class Default:
         self.erc20_abi = [{'constant': True, 'inputs': [{'name': '_owner', 'type': 'address'}], 'name': 'balanceOf', 'outputs': [{'name': 'balance', 'type': 'uint256'}], 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'decimals', 'outputs': [{'name': '', 'type': 'uint8'}], 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_owner', 'type': 'address'}, {'name': '_spender', 'type': 'address'}], 'name': 'allowance', 'outputs': [{'name': 'remaining', 'type': 'uint256'}], 'type': 'function'}]
 
     def upd_w3_client(self, rpc=None, proxy=None):
-        if proxy: self.session = create_session(proxy)
+        if proxy and useProxies: self.session = create_session(proxy)
 
         if rpc: self.rpc = rpc
 
